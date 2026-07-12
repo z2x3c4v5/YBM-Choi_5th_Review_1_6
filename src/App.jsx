@@ -12,74 +12,65 @@ import React, { useState, useEffect, useRef } from 'react';
 //  - ko: (선택) 한글 뜻. 원하면 화면에 자막처럼 보여줄 수 있습니다.
 // =================================================================
 const UNIT_POOLS = {
-  // 1단원: 학년 묻고 답하기(What grade ~) + 교실 위치(Where is ~ / It's on the N floor).
+  // 1단원: 출신 나라 묻고 답하기(Where are you from? / I'm from ~).
   '1단원': [
-    { emoji: '1️⃣', image: '/images/01_i_m_in_the_first_grade.png', question: 'What grade are you in?', answer: "I'm in the first grade.", ko: '너는 몇 학년이니? / 나는 1학년이야.' },
-    { emoji: '2️⃣', image: '/images/02_i_m_in_the_second_grade.png', question: 'What grade are you in?', answer: "I'm in the second grade.", ko: '너는 몇 학년이니? / 나는 2학년이야.' },
-    { emoji: '3️⃣', image: '/images/03_i_m_in_the_third_grade.png', question: 'What grade are you in?', answer: "I'm in the third grade.", ko: '너는 몇 학년이니? / 나는 3학년이야.' },
-    { emoji: '4️⃣', image: '/images/04_i_m_in_the_fourth_grade.png', question: 'What grade are you in?', answer: "I'm in the fourth grade.", ko: '너는 몇 학년이니? / 나는 4학년이야.' },
-    { emoji: '5️⃣', image: '/images/05_i_m_in_the_fifth_grade.png', question: 'What grade are you in?', answer: "I'm in the fifth grade.", ko: '너는 몇 학년이니? / 나는 5학년이야.' },
-    { emoji: '6️⃣', image: '/images/06_i_m_in_the_sixth_grade.png', question: 'What grade are you in?', answer: "I'm in the sixth grade.", ko: '너는 몇 학년이니? / 나는 6학년이야.' },
-    { emoji: '🏫', image: '/images/07_it_s_on_the_first_floor.png', question: 'Where is your classroom?', answer: "It's on the first floor.", ko: '너의 교실은 어디에 있니? / 1층에 있어.' },
-    { emoji: '🎨', image: '/images/08_it_s_on_the_second_floor.png', question: 'Where is the art room?', answer: "It's on the second floor.", ko: '미술실은 어디에 있니? / 2층에 있어.' },
-    { emoji: '💻', image: '/images/09_it_s_on_the_third_floor.png', question: 'Where is the computer room?', answer: "It's on the third floor.", ko: '컴퓨터실은 어디에 있니? / 3층에 있어.' },
-    { emoji: '♻️', image: '/images/10_it_s_on_the_fifth_floor.png', question: 'Where is the eco room?', answer: "It's on the fifth floor.", ko: '에코실은 어디에 있니? / 5층에 있어.' },
-    { emoji: '🔬', image: '/images/11_it_s_on_the_sixth_floor.png', question: 'Where is the science room?', answer: "It's on the sixth floor.", ko: '과학실은 어디에 있니? / 6층에 있어.' },
+    { emoji: '🇰🇷', image: '/images/01_i_m_from_korea.png', question: 'Where are you from?', answer: "I'm from Korea.", ko: '너는 어디에서 왔니? / 나는 한국에서 왔어.' },
+    { emoji: '🇻🇳', image: '/images/02_i_m_from_vietnam.png', question: 'Where are you from?', answer: "I'm from Vietnam.", ko: '너는 어디에서 왔니? / 나는 베트남에서 왔어.' },
+    { emoji: '🇨🇦', image: '/images/03_i_m_from_canada.png', question: 'Where are you from?', answer: "I'm from Canada.", ko: '너는 어디에서 왔니? / 나는 캐나다에서 왔어.' },
+    { emoji: '🇦🇺', image: '/images/04_i_m_from_australia.png', question: 'Where are you from?', answer: "I'm from Australia.", ko: '너는 어디에서 왔니? / 나는 호주에서 왔어.' },
+    { emoji: '🇧🇷', image: '/images/05_i_m_from_brazil.png', question: 'Where are you from?', answer: "I'm from Brazil.", ko: '너는 어디에서 왔니? / 나는 브라질에서 왔어.' },
+    { emoji: '🇰🇪', image: '/images/06_i_m_from_kenya_nice_to_meet_you.png', question: 'Where are you from?', answer: "I'm from Kenya. Nice to meet you.", ko: '너는 어디에서 왔니? / 나는 케냐에서 왔어. 만나서 반가워.' },
+    { emoji: '🇫🇷', image: '/images/07_i_m_from_france_nice_to_meet_you.png', question: 'Where are you from?', answer: "I'm from France. Nice to meet you.", ko: '너는 어디에서 왔니? / 나는 프랑스에서 왔어. 만나서 반가워.' },
   ],
-  // 2단원: 장래 희망 묻고 답하기(What do you want to be? / I want to be ~. I'm good at ~).
+  // 2단원: 허락 묻고 답하기(Can I ~? / Yes, you can. / Sorry, you can't.).
   '2단원': [
-    { emoji: '🚗', image: '/images/01_i_want_to_be_a_car_designer_i_m_good_at_drawing_ca.png', question: 'What do you want to be?', answer: "I want to be a car designer. I'm good at drawing cars.", ko: '너는 무엇이 되고 싶니? / 나는 자동차 디자이너가 되고 싶어. 나는 자동차를 잘 그려.' },
-    { emoji: '🎭', image: '/images/02_i_want_to_be_a_musical_actor_i_m_good_at_singing_a.png', question: 'What do you want to be?', answer: "I want to be a musical actor. I'm good at singing and acting.", ko: '너는 무엇이 되고 싶니? / 나는 뮤지컬 배우가 되고 싶어. 나는 노래와 연기를 잘해.' },
-    { emoji: '⚽', image: '/images/03_i_want_to_be_a_soccer_player_i_m_good_at_running_a.png', question: 'What do you want to be?', answer: "I want to be a soccer player. I'm good at running and kicking.", ko: '너는 무엇이 되고 싶니? / 나는 축구 선수가 되고 싶어. 나는 달리기와 공차기를 잘해.' },
-    { emoji: '🦁', image: '/images/04_i_want_to_be_a_zookeeper_i_m_good_at_taking_care_o.png', question: 'What do you want to be?', answer: "I want to be a zookeeper. I'm good at taking care of animals.", ko: '너는 무엇이 되고 싶니? / 나는 사육사가 되고 싶어. 나는 동물 돌보기를 잘해.' },
-    { emoji: '🎹', image: '/images/05_i_want_to_be_a_pianist_i_m_good_at_playing_the_pia.png', question: 'What do you want to be?', answer: "I want to be a pianist. I'm good at playing the piano.", ko: '너는 무엇이 되고 싶니? / 나는 피아니스트가 되고 싶어. 나는 피아노 연주를 잘해.' },
-    { emoji: '🧪', image: '/images/06_i_want_to_be_a_scientist_i_m_good_at_making_robots.png', question: 'What do you want to be?', answer: "I want to be a scientist. I'm good at making robots.", ko: '너는 무엇이 되고 싶니? / 나는 과학자가 되고 싶어. 나는 로봇 만들기를 잘해.' },
+    { emoji: '🪑', image: '/images/01_yes_you_can.png', question: 'Can I sit here?', answer: 'Yes, you can.', ko: '여기 앉아도 되나요? / 응, 돼.' },
+    { emoji: '🎮', image: '/images/02_sorry_you_can_t.png', question: 'Can I play games?', answer: "Sorry, you can't.", ko: '게임을 해도 되나요? / 미안하지만, 안 돼.' },
+    { emoji: '📷', image: '/images/03_yes_you_can.png', question: 'Can I take a picture?', answer: 'Yes, you can.', ko: '사진을 찍어도 되나요? / 응, 돼.' },
+    { emoji: '🚲', image: '/images/04_sorry_you_can_t.png', question: 'Can I ride a bike?', answer: "Sorry, you can't.", ko: '자전거를 타도 되나요? / 미안하지만, 안 돼.' },
+    { emoji: '🍪', image: '/images/05_yes_you_can.png', question: 'Can I have some cookies?', answer: 'Yes, you can.', ko: '쿠키를 좀 먹어도 되나요? / 응, 돼.' },
+    { emoji: '🖍️', image: '/images/06_of_course_here_you_are.png', question: 'Can I use this crayon?', answer: 'Of course. Here you are.', ko: '이 크레용을 써도 되나요? / 물론이지. 여기 있어.' },
   ],
-  // 3단원: 날짜 묻고 답하기(When is ~? / It's on 월+서수).
+  // 3단원: 가장 좋아하는 과목 묻고 답하기(What's your favorite subject? / My favorite subject is ~).
   '3단원': [
-    { emoji: '📚', image: '/images/01_it_s_on_january_15th.png', question: 'When is the book festival?', answer: "It's on January 15th.", ko: '독서 축제는 언제니? / 1월 15일이야.' },
-    { emoji: '🍕', image: '/images/02_it_s_on_february_1st.png', question: 'When is the pizza party?', answer: "It's on February 1st.", ko: '피자 파티는 언제니? / 2월 1일이야.' },
-    { emoji: '🎭', image: '/images/03_it_s_on_march_21st.png', question: 'When is the class show?', answer: "It's on March 21st.", ko: '학급 발표회는 언제니? / 3월 21일이야.' },
-    { emoji: '⚾', image: '/images/04_it_s_on_april_22nd.png', question: 'When is the T-ball game?', answer: "It's on April 22nd.", ko: '티볼 경기는 언제니? / 4월 22일이야.' },
-    { emoji: '🎪', image: '/images/05_it_s_on_may_3rd.png', question: 'When is the school festival?', answer: "It's on May 3rd.", ko: '학교 축제는 언제니? / 5월 3일이야.' },
-    { emoji: '🖼️', image: '/images/06_it_s_on_june_30th.png', question: 'When is the art show?', answer: "It's on June 30th.", ko: '미술 전시회는 언제니? / 6월 30일이야.' },
-    { emoji: '📚', image: '/images/07_it_s_on_july_7th.png', question: 'When is the book festival?', answer: "It's on July 7th.", ko: '독서 축제는 언제니? / 7월 7일이야.' },
-    { emoji: '🍕', image: '/images/08_it_s_on_august_12th.png', question: 'When is the pizza party?', answer: "It's on August 12th.", ko: '피자 파티는 언제니? / 8월 12일이야.' },
-    { emoji: '🎭', image: '/images/09_it_s_on_september_9th.png', question: 'When is the class show?', answer: "It's on September 9th.", ko: '학급 발표회는 언제니? / 9월 9일이야.' },
-    { emoji: '⚾', image: '/images/10_it_s_on_october_10th.png', question: 'When is the T-ball game?', answer: "It's on October 10th.", ko: '티볼 경기는 언제니? / 10월 10일이야.' },
-    { emoji: '🎪', image: '/images/11_it_s_on_november_4th.png', question: 'When is the school festival?', answer: "It's on November 4th.", ko: '학교 축제는 언제니? / 11월 4일이야.' },
-    { emoji: '🖼️', image: '/images/12_it_s_on_december_25th.png', question: 'When is the art show?', answer: "It's on December 25th.", ko: '미술 전시회는 언제니? / 12월 25일이야.' },
+    { emoji: '🔤', image: '/images/01_my_favorite_subject_is_english.png', question: "What's your favorite subject?", answer: 'My favorite subject is English.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 영어야.' },
+    { emoji: '📖', image: '/images/02_my_favorite_subject_is_korean.png', question: "What's your favorite subject?", answer: 'My favorite subject is Korean.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 국어야.' },
+    { emoji: '🎵', image: '/images/03_my_favorite_subject_is_music_i_like_singing_songs.png', question: "What's your favorite subject?", answer: 'My favorite subject is music. I like singing songs.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 음악이야. 나는 노래 부르는 것을 좋아해.' },
+    { emoji: '➗', image: '/images/04_my_favorite_subject_is_math_i_like_doing_math_prob.png', question: "What's your favorite subject?", answer: 'My favorite subject is math. I like doing math problems.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 수학이야. 나는 수학 문제 푸는 것을 좋아해.' },
+    { emoji: '⚽', image: '/images/05_my_favorite_subject_is_p_e_i_like_playing_sports.png', question: "What's your favorite subject?", answer: 'My favorite subject is P.E. I like playing sports.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 체육이야. 나는 운동하는 것을 좋아해.' },
+    { emoji: '🤖', image: '/images/06_my_favorite_subject_is_science_i_like_making_robot.png', question: "What's your favorite subject?", answer: 'My favorite subject is science. I like making robots.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 과학이야. 나는 로봇 만드는 것을 좋아해.' },
+    { emoji: '🎨', image: '/images/07_my_favorite_subject_is_art_i_like_drawing_pictures.png', question: "What's your favorite subject?", answer: 'My favorite subject is art. I like drawing pictures.', ko: '네가 가장 좋아하는 과목은 무엇이니? / 내가 가장 좋아하는 과목은 미술이야. 나는 그림 그리는 것을 좋아해.' },
   ],
-  // 4단원: 아픈 곳 묻고 답하기(What's wrong? / I have a ~).
+  // 4단원: 하루 일과 시각 묻고 답하기(What time do you ~? / I ~ at 시각).
   '4단원': [
-    { emoji: '🤧', image: '/images/01_i_have_a_cold.png', question: "What's wrong?", answer: 'I have a cold.', ko: '어디가 아프니? / 나는 감기에 걸렸어.' },
-    { emoji: '🤒', image: '/images/02_i_have_a_fever.png', question: "What's wrong?", answer: 'I have a fever.', ko: '어디가 아프니? / 나는 열이 나.' },
-    { emoji: '🤕', image: '/images/03_i_have_a_headache.png', question: "What's wrong?", answer: 'I have a headache.', ko: '어디가 아프니? / 나는 머리가 아파.' },
-    { emoji: '👃', image: '/images/04_i_have_a_runny_nose.png', question: "What's wrong?", answer: 'I have a runny nose.', ko: '어디가 아프니? / 나는 콧물이 나.' },
-    { emoji: '🦷', image: '/images/05_i_have_a_toothache.png', question: "What's wrong?", answer: 'I have a toothache.', ko: '어디가 아프니? / 나는 이가 아파.' },
+    { emoji: '⏰', image: '/images/01_i_get_up_at_7_00.png', question: 'What time do you get up?', answer: 'I get up at 7:00.', ko: '너는 몇 시에 일어나니? / 나는 7시에 일어나.' },
+    { emoji: '🎒', image: '/images/02_i_go_to_school_at_8_20.png', question: 'What time do you go to school?', answer: 'I go to school at 8:20.', ko: '너는 몇 시에 학교에 가니? / 나는 8시 20분에 학교에 가.' },
+    { emoji: '🏠', image: '/images/03_i_get_home_at_4_00.png', question: 'What time do you get home?', answer: 'I get home at 4:00.', ko: '너는 몇 시에 집에 오니? / 나는 4시에 집에 와.' },
+    { emoji: '🏃', image: '/images/04_i_exercise_at_5_40.png', question: 'What time do you exercise?', answer: 'I exercise at 5:40.', ko: '너는 몇 시에 운동하니? / 나는 5시 40분에 운동해.' },
+    { emoji: '🛁', image: '/images/05_i_take_a_bath_at_6_40.png', question: 'What time do you take a bath?', answer: 'I take a bath at 6:40.', ko: '너는 몇 시에 목욕하니? / 나는 6시 40분에 목욕해.' },
+    { emoji: '🛏️', image: '/images/06_i_go_to_bed_at_9_40.png', question: 'What time do you go to bed?', answer: 'I go to bed at 9:40.', ko: '너는 몇 시에 자니? / 나는 9시 40분에 자.' },
   ],
-  // 5단원: 누가 했는지 묻고 답하기(Who made/painted/wrote/built ~? / 이름 + did.).
+  // 5단원: 누구의 물건인지 묻고 답하기(Whose ~ is this? / It's 이름's.).
   '5단원': [
-    { emoji: '🗺️', image: '/images/01_tom_did.png', question: 'Who made this map?', answer: 'Tom did.', ko: '누가 이 지도를 만들었니? / Tom이 만들었어.' },
-    { emoji: '🖼️', image: '/images/02_sally_did.png', question: 'Who painted this picture?', answer: 'Sally did.', ko: '누가 이 그림을 그렸니? / Sally가 그렸어.' },
-    { emoji: '✈️', image: '/images/03_mike_did.png', question: 'Who made this airplane?', answer: 'Mike did.', ko: '누가 이 비행기를 만들었니? / Mike가 만들었어.' },
-    { emoji: '📖', image: '/images/04_jane_did.png', question: 'Who wrote this book?', answer: 'Jane did.', ko: '누가 이 책을 썼니? / Jane이 썼어.' },
-    { emoji: '🏠', image: '/images/05_sam_did.png', question: 'Who built this house?', answer: 'Sam did.', ko: '누가 이 집을 지었니? / Sam이 지었어.' },
-    { emoji: '✉️', image: '/images/06_lucy_did.png', question: 'Who wrote these letters?', answer: 'Lucy did.', ko: '누가 이 편지들을 썼니? / Lucy가 썼어.' },
+    { emoji: '🍶', image: '/images/01_it_s_mine.png', question: 'Whose bottle is this? It has yellow circles.', answer: "It's mine.", ko: '이것은 누구의 물병이니? 노란색 원들이 있어. / 내 거야.' },
+    { emoji: '📱', image: '/images/02_it_s_maria_s.png', question: 'Whose phone is this? It has a black star.', answer: "It's Maria's.", ko: '이것은 누구의 휴대폰이니? 검은색 별이 있어. / Maria의 것이야.' },
+    { emoji: '👟', image: '/images/03_it_s_amy_s.png', question: 'Whose shoe is this? It has a green heart.', answer: "It's Amy's.", ko: '이것은 누구의 신발이니? 초록색 하트가 있어. / Amy의 것이야.' },
+    { emoji: '⌚', image: '/images/04_it_s_eric_s.png', question: 'Whose watch is this? It has white circles.', answer: "It's Eric's.", ko: '이것은 누구의 시계니? 흰색 원들이 있어. / Eric의 것이야.' },
+    { emoji: '👠', image: '/images/05_it_s_kelly_s.png', question: 'Whose shoe is this? It has a pink star.', answer: "It's Kelly's.", ko: '이것은 누구의 신발이니? 분홍색 별이 있어. / Kelly의 것이야.' },
+    { emoji: '🧤', image: '/images/06_it_s_tom_s.png', question: 'Whose glove is this? It has a blue heart.', answer: "It's Tom's.", ko: '이것은 누구의 장갑이니? 파란색 하트가 있어. / Tom의 것이야.' },
+    { emoji: '☂️', image: '/images/07_it_s_sam_s.png', question: 'Whose umbrella is this? It has a red star.', answer: "It's Sam's.", ko: '이것은 누구의 우산이니? 빨간색 별이 있어. / Sam의 것이야.' },
   ],
-  // 6단원: 미래 계획 묻고 답하기(What are you going to do? / I'm going to ~).
+  // 6단원: 미래 계획·지구를 위한 실천 묻고 답하기(What will you do ~? / I will ~).
   '6단원': [
-    { emoji: '🎨', image: '/images/01_i_m_going_to_do_face_painting.png', question: 'What are you going to do?', answer: "I'm going to do face painting.", ko: '너는 무엇을 할 거니? / 나는 페이스 페인팅을 할 거야.' },
-    { emoji: '👜', image: '/images/02_i_m_going_to_make_an_eco_bag.png', question: 'What are you going to do?', answer: "I'm going to make an eco-bag.", ko: '너는 무엇을 할 거니? / 나는 에코백을 만들 거야.' },
-    { emoji: '🎤', image: '/images/03_i_m_going_to_sing_a_song.png', question: 'What are you going to do?', answer: "I'm going to sing a song.", ko: '너는 무엇을 할 거니? / 나는 노래를 부를 거야.' },
-    { emoji: '🎬', image: '/images/04_i_m_going_to_watch_a_movie.png', question: 'What are you going to do?', answer: "I'm going to watch a movie.", ko: '너는 무엇을 할 거니? / 나는 영화를 볼 거야.' },
-    { emoji: '🔬', image: '/images/05_i_m_going_to_do_a_science_project.png', question: 'What are you going to do?', answer: "I'm going to do a science project.", ko: '너는 무엇을 할 거니? / 나는 과학 과제를 할 거야.' },
-    { emoji: '🏠', image: '/images/06_i_m_going_to_stay_home.png', question: 'What are you going to do?', answer: "I'm going to stay home.", ko: '너는 무엇을 할 거니? / 나는 집에 있을 거야.' },
-    { emoji: '🥋', image: '/images/07_i_m_going_to_do_taekwondo.png', question: 'What are you going to do?', answer: "I'm going to do taekwondo.", ko: '너는 무엇을 할 거니? / 나는 태권도를 할 거야.' },
-    { emoji: '⚽', image: '/images/08_i_m_going_to_play_soccer.png', question: 'What are you going to do?', answer: "I'm going to play soccer.", ko: '너는 무엇을 할 거니? / 나는 축구를 할 거야.' },
-    { emoji: '🏟️', image: '/images/09_i_m_going_to_see_a_soccer_game.png', question: 'What are you going to do?', answer: "I'm going to see a soccer game.", ko: '너는 무엇을 할 거니? / 나는 축구 경기를 볼 거야.' },
-    { emoji: '👵', image: '/images/10_i_m_going_to_visit_my_grandmother.png', question: 'What are you going to do?', answer: "I'm going to visit my grandmother.", ko: '너는 무엇을 할 거니? / 나는 할머니를 방문할 거야.' },
-    { emoji: '🚜', image: '/images/11_i_m_going_to_go_to_farm_camp.png', question: 'What are you going to do?', answer: "I'm going to go to farm camp.", ko: '너는 무엇을 할 거니? / 나는 농장 캠프에 갈 거야.' },
+    { emoji: '🔬', image: '/images/01_i_will_go_to_a_science_camp.png', question: 'What will you do this summer?', answer: 'I will go to a science camp.', ko: '너는 이번 여름에 무엇을 할 거니? / 나는 과학 캠프에 갈 거야.' },
+    { emoji: '👫', image: '/images/02_i_will_visit_my_cousin.png', question: 'What will you do this summer?', answer: 'I will visit my cousin.', ko: '너는 이번 여름에 무엇을 할 거니? / 나는 사촌을 방문할 거야.' },
+    { emoji: '📚', image: '/images/03_i_will_read_many_books.png', question: 'What will you do this summer?', answer: 'I will read many books.', ko: '너는 이번 여름에 무엇을 할 거니? / 나는 책을 많이 읽을 거야.' },
+    { emoji: '🏖️', image: '/images/04_i_will_go_to_the_beach.png', question: 'What will you do this summer?', answer: 'I will go to the beach.', ko: '너는 이번 여름에 무엇을 할 거니? / 나는 해변에 갈 거야.' },
+    { emoji: '💧', image: '/images/05_i_will_save_water.png', question: 'What will you do for the Earth?', answer: 'I will save water.', ko: '너는 지구를 위해 무엇을 할 거니? / 나는 물을 아낄 거야.' },
+    { emoji: '💡', image: '/images/06_i_will_turn_off_the_lights.png', question: 'What will you do for the Earth?', answer: 'I will turn off the lights.', ko: '너는 지구를 위해 무엇을 할 거니? / 나는 불을 끌 거야.' },
+    { emoji: '🗑️', image: '/images/07_i_will_pick_up_trash.png', question: 'What will you do for the Earth?', answer: 'I will pick up trash.', ko: '너는 지구를 위해 무엇을 할 거니? / 나는 쓰레기를 주울 거야.' },
+    { emoji: '🚲', image: '/images/08_i_will_ride_a_bike.png', question: 'What will you do for the Earth?', answer: 'I will ride a bike.', ko: '너는 지구를 위해 무엇을 할 거니? / 나는 자전거를 탈 거야.' },
+    { emoji: '♻️', image: '/images/09_i_will_use_less_plastic.png', question: 'What will you do for the Earth?', answer: 'I will use less plastic.', ko: '너는 지구를 위해 무엇을 할 거니? / 나는 플라스틱을 덜 쓸 거야.' },
   ],
 };
 
@@ -202,7 +193,7 @@ const ORDINAL_WORDS = {
 
 const STOPWORDS = new Set([
   'the', 'a', 'an', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'i', 'im', 'my', 'me',
-  'mine', 'on', 'it', 'its', 'in', 'of', 'to', 'you', 'your', 'and', 'can', 'do', 'does',
+  'on', 'it', 'its', 'in', 'of', 'to', 'you', 'your', 'and', 'can', 'do', 'does',
   'did', 'go', 'goes', 'got', 'get', 'have', 'has', 'had', 'will', 'at', 'for', 'with',
   'because', 'this', 'that', 'so', 'very',
 ]);
@@ -337,44 +328,44 @@ const WORD_MEANING = {
   to: '~로', and: '그리고', can: '~할 수 있다', do: '~하다', does: '~하다', go: '가다',
   see: '보다', eat: '먹다', get: '얻다/받다', have: '가지고 있다', has: '가지고 있다',
   its: '그것의', "it's": '그것은 ~이다', it: '그것', one: '하나', two: '둘',
+  will: '~할 것이다', some: '약간의', here: '여기',
+  yes: '응/네', no: '아니', of: '~의', course: '물론', "of course": '물론이지',
   // 의문사
-  what: '무엇/어떤', when: '언제', why: '왜', how: '어떻게', where: '어디', who: '누구', which: '어느 것',
-  // 1단원 (학년 + 교실 위치)
-  grade: '학년', first: '첫째 (1)', second: '둘째 (2)', third: '셋째 (3)',
-  fourth: '넷째 (4)', fifth: '다섯째 (5)', sixth: '여섯째 (6)',
-  floor: '층', classroom: '교실', art: '미술', computer: '컴퓨터',
-  eco: '에코/환경', science: '과학', room: '방/교실',
-  // 2단원 (장래 희망)
-  want: '원하다', be: '되다', good: '잘하는/좋은', at: '~을/~에',
-  designer: '디자이너', drawing: '그리기', car: '자동차', cars: '자동차들',
-  musical: '뮤지컬', actor: '배우', singing: '노래하기', acting: '연기하기',
-  player: '선수', running: '달리기', kicking: '공차기', soccer: '축구',
-  zookeeper: '사육사', taking: '돌보기', care: '돌봄', animals: '동물들',
-  pianist: '피아니스트', playing: '연주하기', piano: '피아노',
-  scientist: '과학자', making: '만들기', robots: '로봇',
-  // 3단원 (날짜)
-  book: '책/독서', festival: '축제', pizza: '피자', party: '파티',
-  class: '학급/반', show: '발표회/공연', tball: '티볼', 't-ball': '티볼',
-  school: '학교', day: '날', game: '경기/게임',
-  january: '1월', february: '2월', march: '3월', april: '4월', may: '5월', june: '6월',
-  july: '7월', august: '8월', september: '9월', october: '10월', november: '11월', december: '12월',
-  '1st': '1일', '3rd': '3일', '4th': '4일', '7th': '7일', '9th': '9일', '10th': '10일',
-  '12th': '12일', '15th': '15일', '21st': '21일', '22nd': '22일', '25th': '25일', '30th': '30일',
-  // 4단원 (아픈 곳)
-  wrong: '잘못된/이상한', cold: '감기', fever: '열', headache: '두통',
-  toothache: '치통', runny: '콧물이 흐르는', nose: '코', stomachache: '복통(배 아픔)',
-  // 5단원 (누가 했는지 — 과거)
-  made: '만들었다', painted: '(그림을) 그렸다', wrote: '썼다', built: '지었다',
-  did: '했다', map: '지도', picture: '그림', airplane: '비행기',
-  house: '집', letters: '편지들', letter: '편지', these: '이것들',
-  tom: 'Tom(이름)', sally: 'Sally(이름)', mike: 'Mike(이름)',
-  jane: 'Jane(이름)', sam: 'Sam(이름)', lucy: 'Lucy(이름)',
-  // 6단원 (미래 계획)
-  going: '~할 예정인', face: '얼굴', painting: '그리기(페인팅)',
-  ecobag: '에코백', 'eco-bag': '에코백', bag: '가방', sing: '노래하다', song: '노래',
-  watch: '보다', movie: '영화', project: '과제/프로젝트', stay: '머무르다', home: '집',
-  taekwondo: '태권도', play: '(운동을) 하다', visit: '방문하다',
-  grandmother: '할머니', farm: '농장', camp: '캠프', make: '만들다',
+  what: '무엇/어떤', when: '언제', why: '왜', how: '어떻게', where: '어디', who: '누구',
+  which: '어느 것', whose: '누구의',
+  // 1단원 (출신 나라 — Where are you from? / I'm from ~)
+  from: '~에서/~ 출신', nice: '좋은/반가운', meet: '만나다',
+  korea: '한국', vietnam: '베트남', canada: '캐나다', australia: '호주',
+  brazil: '브라질', kenya: '케냐', france: '프랑스',
+  // 2단원 (허락 — Can I ~? / Yes, you can. / Sorry, you can't.)
+  sit: '앉다', play: '(게임·운동을) 하다', games: '게임들', game: '게임/경기',
+  take: '(사진을) 찍다/가지다', picture: '사진/그림', ride: '타다', bike: '자전거',
+  cookies: '쿠키들', cookie: '쿠키', use: '사용하다', crayon: '크레용',
+  sorry: '미안한', "can't": '~할 수 없다', cant: '~할 수 없다',
+  // 3단원 (좋아하는 과목 — What's your favorite subject? / My favorite subject is ~)
+  favorite: '가장 좋아하는', subject: '과목', like: '좋아하다',
+  english: '영어', korean: '국어/한국어', music: '음악', songs: '노래들', song: '노래',
+  math: '수학', doing: '(문제를) 푸는/하는', problems: '문제들', problem: '문제',
+  sports: '운동/스포츠', sport: '운동', science: '과학', robots: '로봇들', robot: '로봇',
+  making: '만들기', art: '미술', drawing: '(그림) 그리기', pictures: '그림들',
+  singing: '노래하기', playing: '(운동을) 하기', pe: '체육', 'p.e.': '체육',
+  // 4단원 (하루 일과 시각 — What time do you ~? / I ~ at 시각)
+  time: '시각/시간', up: '위로/일어나', school: '학교', home: '집',
+  exercise: '운동하다', bath: '목욕', bed: '침대/잠자리',
+  // 5단원 (누구의 물건 — Whose ~ is this? / It's 이름's.)
+  bottle: '물병', phone: '휴대폰', shoe: '신발',
+  watch: '손목시계', glove: '장갑', umbrella: '우산',
+  circles: '원들', circle: '원/동그라미', star: '별', heart: '하트',
+  yellow: '노란색', black: '검은색', green: '초록색', white: '흰색',
+  pink: '분홍색', blue: '파란색', red: '빨간색',
+  maria: 'Maria(이름)', amy: 'Amy(이름)', eric: 'Eric(이름)',
+  kelly: 'Kelly(이름)', tom: 'Tom(이름)', sam: 'Sam(이름)',
+  // 6단원 (미래 계획·지구 지키기 — What will you do ~? / I will ~)
+  summer: '여름', camp: '캠프', visit: '방문하다', cousin: '사촌',
+  read: '읽다', many: '많은', books: '책들', book: '책',
+  beach: '해변', earth: '지구', save: '아끼다/절약하다', water: '물',
+  turn: '돌리다/끄다', off: '꺼진', lights: '불/전등', light: '불/전등',
+  pick: '줍다/집다', trash: '쓰레기', less: '더 적은', plastic: '플라스틱',
 };
 
 const lookupMeaning = (raw) => {
@@ -1289,7 +1280,7 @@ export default function App() {
           <div className="absolute top-1 left-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">🌊</div>
           <div className="absolute bottom-1 right-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">⛱️</div>
           <h1 className="relative text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight break-keep drop-shadow-[0_2px_0_rgba(2,132,199,0.9)]">
-            🏖️ 6학년 1-6단원 주요표현 보드게임{' '}
+            🏖️ 5학년 1-6단원 주요표현 보드게임{' '}
             <span className="text-yellow-200">with Writing</span> 🏄
           </h1>
         </div>
